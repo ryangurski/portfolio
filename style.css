@@ -1,0 +1,381 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #232323;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.background-stripes {
+  position: fixed;
+  bottom: 0;
+  left: 50%; 
+  width: 100vw; 
+  height: auto; 
+  aspect-ratio: 16 / 9; 
+  max-height: 100vh; 
+  transform: translateX(-50%); 
+  z-index: 1;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+.background-stripes-top {
+  position: fixed;
+  left: 50%;
+  width: 9.4%; 
+  height: calc(100vh - 56.25vw); /* 16:9 aspect ratio correction */
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.logo {
+  position: absolute;
+  top: 13vh; 
+  left: 5vw; 
+  width: 8vw; 
+  height: auto;
+  cursor: pointer; 
+  transition: opacity 0.3s ease-in-out; 
+  z-index: 2;
+}
+
+.logo:hover {
+  opacity: 0.5; 
+}
+
+#grain-container {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: auto; 
+  pointer-events: none; 
+  z-index: 1;
+}
+
+.grain {
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.7); 
+  border-radius: 50%;
+  width: 1px;
+  height: 1px;
+  animation: flicker 0.5s infinite alternate;
+  pointer-events: none; 
+}
+
+@keyframes flicker {
+  0% {
+      opacity: 0.9;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+#firstname, #lastname {
+  position: absolute;
+  color: white;
+  font-family: "lulo-outline", sans-serif;
+  font-weight: 700;
+  font-size: 5vw;
+  white-space: nowrap; 
+}
+
+#firstname {
+  left: 22%;
+  top: 13%;
+}
+
+#lastname {
+  right: 13%;
+  top: 13%;
+}
+
+#videos {
+  position: absolute;
+  top: 75%;
+  left: 20%;
+  rotate: -28deg;
+  color: white;
+  font-family: "lulo-one", sans-serif;
+  font-weight: 700;
+  font-size: 4vw;
+  transform: matrix(1.2, 0, 0.6, 0.8, 0, 0) skewX(-10deg);
+  z-index: 2;
+  text-decoration: none;
+}
+
+#about {
+  position: absolute;
+  top: 75%;
+  right: 21%;
+  rotate: 30deg;
+  color: white;
+  font-family: "lulo-one", sans-serif;
+  font-weight: 700;
+  font-size: 4vw;
+  transform: matrix(1.2, 0, -0.6, 0.8, 0, 0) skewX(10deg);
+  z-index: 2;
+  text-decoration: none;
+}
+
+#videos, #about {
+  cursor: pointer; 
+  opacity: 0.6; 
+  transition: color 0.3s ease-in-out; 
+}
+
+#videos:hover, #about:hover {
+  color: black;
+}
+
+.striped-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw; 
+  height: clamp(20vh, 2.5 * 8vw, 47vh); 
+  transform: translateX(-50%); 
+  z-index: 0;
+}
+
+#videos-top, #about-top {
+  position: absolute;
+  top: 15%; 
+  left: 17%; 
+  color: white;
+  font-family: "lulo-one", sans-serif;
+  font-weight: 700;
+  font-size: 4vw;
+  z-index: 3;
+}
+
+#videos-container {
+  position: absolute;
+  left: 5vw;
+  top: 55vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+#videos-container img {
+  width: 45vw; 
+  height: 25vw; 
+  object-fit: cover; 
+  display: block; 
+}
+
+#videos-container div {
+  display: flex;
+  align-items: center; 
+  gap: 2vw; 
+}
+
+.video-text {
+  font-size: 3vw;
+  color: white;
+  font-family: "lulo-one", sans-serif;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap; 
+}
+
+.video-text:hover {
+  color: black; 
+  cursor: pointer; 
+}
+
+#videos-container a {
+  text-decoration: none; 
+}
+
+.container {
+  width: 45vw; 
+  margin-left: auto; 
+  margin-right: 5vw; 
+  font-family: "Stevie Sans", sans-serif;
+  font-weight: 400;
+  color: #fff;
+  text-align: left; 
+  position: absolute;
+  top: 22vw;
+  right: 0;
+  padding: 0 1.5vw; 
+}
+
+.container p {
+  display: none; 
+  margin-bottom: 1.5vh; 
+  text-align: left; 
+  word-wrap: break-word; /* Ensure text wraps within the container */
+}
+
+.container > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: right;
+}
+
+p {
+  font-size: 1.2vw;
+  margin-bottom: 1.5vw;
+  text-align: justify;
+}
+
+.button-container {
+  position: absolute;
+  top: 55%;
+  left: 10%;
+  display: flex;
+  flex-direction: column;
+  gap: 6vh;
+}
+
+.intro-button {
+  padding: 0.8em 1.5em; 
+  font-size: 1.5vw; 
+  background-color: black; 
+  color: white; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.intro-button:hover {
+  background-color: #F79420; 
+}
+
+.intro-button.active {
+  background-color: #F79420; 
+}
+
+.intro-button.inactive {
+  background-color: black; 
+}
+
+.ae-br, .ae-door, .blend-br, .blend-pp {
+  width: 100%; 
+  height: auto;
+  flex-shrink: 0;
+  transition: transform 1s ease-in-out;
+  position: absolute; 
+  left: 0;
+  opacity: 0; 
+}
+
+.ae-br.active, .ae-door.active, .blend-br.active, .blend-pp.active {
+  opacity: 1; 
+}
+
+.showcase {
+  width: 100%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  transition: opacity 0.3s ease;
+}
+
+.showcase:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.iphone {
+  position: absolute;
+  right: 12%; 
+  width: 100%; 
+  height: auto;
+}
+
+.dar {
+  display: none; 
+  white-space: nowrap; 
+}
+
+.pc, .dar, .youtube {
+  font-size: 1.5vw;  
+  font-weight: bold; 
+  padding: 1.2vh;
+}
+
+.youtube {
+  font-size: 1.5vw;  
+  font-weight: bold; 
+}
+
+iframe {
+  width: 100%;
+  height: 40vh;
+  object-fit: cover;
+  display: none; 
+}
+
+iframe.active {
+  display: block; 
+}
+
+#nextArrow {
+  position: absolute;
+  right: 0;
+  padding: 0.5em 1.5em; 
+  font-size: 1.5vw; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black; 
+  color: white; 
+  border: none;
+  border-radius: 5px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+  text-align: center;
+}
+
+#nextArrow:hover {
+  background-color: #F79420; 
+}
+
+.circle {
+  display: inline-block;
+  width: 1vw; 
+  height: 1vw;
+  border-radius: 50%;
+  border: 0.2vw solid white; 
+  margin: 1vh 0.5vw; 
+  transition: background 0.3s;
+  position: relative;
+  left: 47%;
+}
+
+.circle.active {
+  background: white;
+}
+
+.phone, .mail {
+  filter: invert(1);
+  width: 3vw;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 2vw;
+}
+
+.number, .email {
+  font-size: 1.5vw;
+  color: white;
+  display: inline;
+  margin-left: 1vw;
+}
+
+
+
