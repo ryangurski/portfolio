@@ -47,7 +47,8 @@ body {
 }
 
 .logo:hover {
-  opacity: 0.5; 
+  opacity: 0.5;
+  cursor: pointer; 
 }
 
 #grain-container {
@@ -146,6 +147,55 @@ body {
   z-index: 0;
 }
 
+.menu-container {
+  position: fixed; 
+  top: 3vh;
+  right: 2.5vw;
+  z-index: 1000; 
+}
+
+.menu {
+  position: relative;
+  background: black;
+  color: white;
+  padding: 0.8vh 1.5vw;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 2vw;
+}
+
+.menu-items {
+  position: absolute; 
+  display: none;
+  background: black;
+  top: 80%; 
+  left: 0; 
+  padding: 1vh 1.5vw;
+  border-radius: 5px;
+  font-size: 1.2vw;
+  white-space: nowrap; 
+}
+
+.menu-items a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 1vh 0;
+  font-family: "Stevie Sans", sans-serif;
+  font-weight: 400;
+  font-size: 1.2vw;
+}
+
+.menu-items a:hover {
+  background-color: #F79420;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.menu.open + .menu-items {
+  display: block;
+}
+
 #videos-top, #about-top {
   position: absolute;
   top: 15%; 
@@ -166,35 +216,77 @@ body {
   gap: 2vh;
 }
 
-#videos-container img {
-  width: 45vw; 
-  height: 25vw; 
-  object-fit: cover; 
-  display: block; 
+.video-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 2vw;
 }
 
-#videos-container div {
+#videos-container img {
+  width: 45vw;
+  height: 25vw;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease-in-out; 
+}
+
+#videos-container img:hover {
+  opacity: 0.5; 
+}
+
+.video-info {
   display: flex;
-  align-items: center; 
-  gap: 2vw; 
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .video-text {
-  font-size: 3vw;
+  font-size: 1.7vw;
   color: white;
   font-family: "lulo-one", sans-serif;
   font-weight: 700;
-  text-align: center;
-  white-space: nowrap; 
+  white-space: nowrap;
+  margin-bottom: 0.5vw; 
 }
 
 .video-text:hover {
-  color: black; 
-  cursor: pointer; 
+  color: black;
+  cursor: pointer;
+}
+
+.read-more-btn {
+  font-family: "Stevie Sans", sans-serif;
+  font-weight: 400;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5vw 1vw;
+  font-size: 1.2vw;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.read-more-btn:hover {
+  background-color: #F79420; 
+}
+
+.extra-text {
+  display: none;
+  font-family: "Stevie Sans", sans-serif;
+  font-weight: 400;
+  font-size: 1.2vw;
+  color: white;
+  max-width: 80%;
+  margin-top: 0.5vw;
 }
 
 #videos-container a {
-  text-decoration: none; 
+  text-decoration: none;
+}
+
+a.video-link {
+  display: flex;
 }
 
 .container {
@@ -206,7 +298,7 @@ body {
   color: #fff;
   text-align: left; 
   position: absolute;
-  top: 22vw;
+  top: 22vh;
   right: 0;
   padding: 0 1.5vw; 
 }
@@ -215,7 +307,7 @@ body {
   display: none; 
   margin-bottom: 1.5vh; 
   text-align: left; 
-  word-wrap: break-word; /* Ensure text wraps within the container */
+  word-wrap: break-word; 
 }
 
 .container > * {
@@ -303,16 +395,12 @@ p {
   white-space: nowrap; 
 }
 
-.pc, .dar, .youtube {
+.pc, .dar {
   font-size: 1.5vw;  
   font-weight: bold; 
   padding: 1.2vh;
 }
 
-.youtube {
-  font-size: 1.5vw;  
-  font-weight: bold; 
-}
 
 iframe {
   width: 100%;
@@ -362,20 +450,194 @@ iframe.active {
   background: white;
 }
 
-.phone, .mail {
+.mail, .vimeo-logo {
   filter: invert(1);
-  width: 3vw;
+  width: 4vw;
   height: auto;
   vertical-align: middle;
   margin-right: 2vw;
+  transition: filter 0.2s ease-in-out;
 }
 
-.number, .email {
-  font-size: 1.5vw;
+.mail:hover, .vimeo-logo:hover {
+  filter: invert(0.3);
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+}
+
+.email, .vimeo {
+  font-size: 1.2vw;
   color: white;
   display: inline;
   margin-left: 1vw;
 }
 
+.email:hover, .vimeo:hover { 
+  cursor: pointer;
+}
 
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
 
+  #firstname, #lastname {
+    font-size: 6vw;
+  }
+
+  #firstname {
+    left: 20%;
+  }
+
+  #lastname {
+    right: 9%;
+  }
+  
+  .logo {
+    top: 12vh;
+    width: 12vw;
+  }
+  
+  .menu-container {
+    top: 1vh;
+    right: 4vw;
+  }
+  
+  .menu {
+    font-size: 3vw;
+    padding: 1vh 2vw;
+  }
+  
+  .menu-items {
+    font-size: 2vw;
+  }
+  
+  .menu-items a {
+    font-size: 2vw;
+    padding: 1.2vh 1vw;
+  }
+  
+  #videos-top, #about-top {
+    top: 12%;
+    left: 20%;
+    font-size: 6vw;
+  }
+  
+  #videos-container {
+    left: 3vw;
+    top: 25vh;
+    gap: 4vh;
+  }
+  
+  .video-item {
+    flex-direction: column;
+    gap: 2vh;
+  }
+  
+  #videos-container img {
+    width: 90vw;
+    height: 50vw;
+  }
+  
+  .video-text {
+    font-size: 4vw;
+    margin-bottom: 1vw;
+  }
+  
+  .read-more-btn {
+    font-size: 3vw;
+    padding: 2vw 3vw;
+  }
+  
+  .extra-text {
+    font-size: 3vw;
+    max-width: 90%;
+    padding-top: 1vh;
+    padding-bottom: 3vh;
+  } 
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5vw; 
+    left: auto;
+    top: 22vh;
+  }
+
+  .intro-button {
+    font-size: 2.8vw;
+    padding: 0.8em 0; 
+    width: 40%; 
+    text-align: center;
+    flex: 0 0 auto; 
+    margin: 0.5vh 1vw; 
+    white-space: nowrap; 
+  }
+
+  .container {
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;  
+    right: 5vw; 
+    left: 5vw;   
+    top: 52vh;  
+  }
+
+  .container p {
+    font-size: 3vw;
+    text-align: center;
+    margin: 1vh auto;
+    padding-bottom: 5vh;
+  }
+
+  .ae-br, .ae-door, .blend-br, .blend-pp {
+    padding-bottom: 5vh;
+  }
+
+  .showcase {
+    margin: 1vh auto;
+    text-align: center;
+    padding-bottom: 5vh;
+  }
+
+  .iphone {
+    width: 80%;
+    left: 0%;
+    margin: 1vh auto;
+    padding-bottom: 5vh;
+  }
+
+  iframe {
+    padding-bottom: 5vh;
+  }
+
+  .pc, .dar {
+    font-size: 3vw;
+    text-align: center;
+    margin-bottom: 0.5vh; 
+  }
+
+  .circle {
+    width: 3vw;
+    height: 3vw;
+    left: 0;
+  }
+
+  
+
+  .email, .vimeo {
+    font-size: 3vw;
+  }
+
+  .mail, .vimeo-logo {
+    width: 8vw;
+  }
+}
