@@ -57,107 +57,122 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function animateLogo(page) {
     const logo = document.querySelector(".logo");
+    
     if (logo && /index\d*\.html$/.test(page)) {
-      logo.style.transition = "transform 1s ease-in-out";
-      logo.style.transform = "rotate(360deg)";
-      
-      setTimeout(() => {
-        logo.style.transition = "";
-        logo.style.transform = "";
-      }, 1000);
+        void logo.offsetWidth; // Force reflow
+
+        logo.style.transition = "transform 1s ease-in-out";
+        logo.style.transform = "rotate(360deg)";
+
+        setTimeout(() => {
+            logo.style.transition = "none";
+            void logo.offsetWidth; // Reflow again
+
+            requestAnimationFrame(() => {
+                logo.style.transform = "rotate(0deg)";
+                requestAnimationFrame(() => {
+                    logo.style.transition = "";
+                });
+            });
+        }, 1000);
     }
   }
   
+  
+
   function generateInitialGrains() {
     const fragment = document.createDocumentFragment();
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-    
-    const initialCount = Math.min(100, Math.floor((viewportWidth * viewportHeight) / 10000));
-    
+    const viewportHeight = window.visualViewport?.height || window.innerHeight;
+    const viewportWidth = window.visualViewport?.width || window.innerWidth;
+
+    const initialCount = Math.min(150, Math.floor((viewportWidth * viewportHeight) / 8000)); 
+
     for (let i = 0; i < initialCount; i++) {
-      const grain = document.createElement("div");
-      grain.classList.add("grain");
-      
-      const randomX = Math.random() * viewportWidth;
-      const randomY = Math.random() * viewportHeight;
-      
-      grain.style.left = `${randomX}px`;
-      grain.style.top = `${randomY}px`;
-      grain.style.opacity = "0.7"; 
-      
+      const grain = createGrain(viewportWidth, viewportHeight);
       fragment.appendChild(grain);
     }
-    
+
     grainContainer.appendChild(fragment);
-    
-    const grains = grainContainer.querySelectorAll('.grain');
-    grains.forEach(grain => {
-      animateGrain(grain, true); 
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.grain').forEach(grain => animateGrain(grain, true));
     });
   }
-  
+
   function generateRemainingGrains() {
     const numGrains = 500;
     const currentGrains = grainContainer.querySelectorAll('.grain').length;
     const remainingGrains = numGrains - currentGrains;
-    
-    if (remainingGrains <= 0) return;
-    
-    const fragment = document.createDocumentFragment();
-    const pageHeight = Math.max(
-      body.scrollHeight,
-      document.documentElement.scrollHeight
-    );
-    
-    const batchSize = 50;
-    const batches = Math.ceil(remainingGrains / batchSize);
-    
-    function createBatch(batchIndex) {
-      if (batchIndex >= batches) return;
-      
-      const start = batchIndex * batchSize;
-      const end = Math.min(start + batchSize, remainingGrains);
-      const localFragment = document.createDocumentFragment();
-      
-      for (let i = start; i < end; i++) {
-        const grain = document.createElement("div");
-        grain.classList.add("grain");
-        
-        const randomX = Math.random() * window.innerWidth;
-        const randomY = Math.random() * pageHeight;
-        
-        grain.style.left = `${randomX}px`;
-        grain.style.top = `${randomY}px`;
-        
-        localFragment.appendChild(grain);
-      }
-      
-      grainContainer.appendChild(localFragment);
-      
+
+  if (remainingGrains <= 0) return;
+
+  const fragment = document.createDocumentFragment();
+  const pageHeight = Math.max(
+    body.scrollHeight,
+    document.documentElement.scrollHeight
+  );
+
+  const batchSize = 50;
+  const batches = Math.ceil(remainingGrains / batchSize);
+
+  function createBatch(batchIndex) {
+    if (batchIndex >= batches) return;
+
+    const start = batchIndex * batchSize;
+    const end = Math.min(start + batchSize, remainingGrains);
+    const localFragment = document.createDocumentFragment();
+
+    for (let i = start; i < end; i++) {
+      const grain = createGrain(window.innerWidth, pageHeight);
+      localFragment.appendChild(grain);
+    }
+
+    grainContainer.appendChild(localFragment);
+
+    requestAnimationFrame(() => {
       const newGrains = Array.from(grainContainer.querySelectorAll('.grain')).slice(-(end - start));
       newGrains.forEach(grain => animateGrain(grain));
-      
-      if (batchIndex + 1 < batches) {
-        setTimeout(() => requestIdleCallback(() => createBatch(batchIndex + 1)), 100);
-      }
+    });
+
+    if (batchIndex + 1 < batches) {
+      setTimeout(() => createBatch(batchIndex + 1), 100); 
     }
-    
-    createBatch(0);
   }
-  
+
+  createBatch(0);
+}
+
+  function createGrain(width, height) {
+    const grain = document.createElement("div");
+    grain.classList.add("grain");
+
+    const randomX = Math.random() * width;
+    const randomY = Math.random() * height;
+
+    grain.style.left = `${randomX}px`;
+    grain.style.top = `${randomY}px`;
+    grain.style.opacity = "0.8"; 
+    grain.style.willChange = "transform, opacity"; 
+
+  return grain;
+  }
+
   function animateGrain(grain, isInitial = false) {
-    function move() {
-      const factor = isInitial ? 0.2 : 1.0;
-      const randomX = (Math.random() - 0.5) * 50 * factor;
-      const randomY = (Math.random() - 0.5) * 50 * factor;
-      
-      grain.style.transform = `translate(${randomX}px, ${randomY}px)`;
-      
-      setTimeout(() => requestAnimationFrame(move), 500 + Math.random() * 1000);
-    }
-    requestAnimationFrame(move);
+  function move() {
+    const factor = isInitial ? 0.3 : 1.0;
+    const randomX = (Math.random() - 0.5) * 30 * factor; 
+    const randomY = (Math.random() - 0.5) * 30 * factor;
+
+    grain.style.transform = `translate(${randomX}px, ${randomY}px)`;
+
+    setTimeout(() => requestAnimationFrame(move), 800 + Math.random() * 1200); 
   }
+  requestAnimationFrame(move);
+  }
+
+
+  generateInitialGrains();
+  setTimeout(generateRemainingGrains, 500);
 
   function adjustPageHeight() {
     let lastElement = [...document.body.children].reverse().find(el => el.offsetHeight > 0);
