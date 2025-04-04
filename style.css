@@ -588,7 +588,7 @@ a {
     text-align: center;  
     right: 5vw; 
     left: 5vw;   
-    top: 52vh;  
+    top: 50%;  
   }
 
   .container p {
@@ -630,8 +630,6 @@ a {
     height: 3vw;
     left: 0;
   }
-
-  
 
   .email, .vimeo {
     font-size: 3vw;
