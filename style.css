@@ -51,6 +51,16 @@ body {
   cursor: pointer; 
 }
 
+.logo-spin {
+  animation: logoSpin 1s ease-in-out forwards;
+}
+
+@keyframes logoSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
 #grain-container {
   position: absolute; 
   top: 0;

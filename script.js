@@ -59,27 +59,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.querySelector(".logo");
     
     if (logo && /index\d*\.html$/.test(page)) {
-        void logo.offsetWidth; // Force reflow
-
-        logo.style.transition = "transform 1s ease-in-out";
-        logo.style.transform = "rotate(360deg)";
-
-        setTimeout(() => {
-            logo.style.transition = "none";
-            void logo.offsetWidth; // Reflow again
-
-            requestAnimationFrame(() => {
-                logo.style.transform = "rotate(0deg)";
-                requestAnimationFrame(() => {
-                    logo.style.transition = "";
-                });
-            });
-        }, 1000);
+      // Remove existing animation class if any
+      logo.classList.remove("logo-spin");
+      
+      // Force reflow
+      void logo.offsetWidth;
+      
+      // Add animation class
+      logo.classList.add("logo-spin");
+      
+      // Remove class after animation completes
+      setTimeout(() => {
+        logo.classList.remove("logo-spin");
+      }, 1000);
     }
   }
   
-  
-
   function generateInitialGrains() {
     const fragment = document.createDocumentFragment();
     const viewportHeight = window.visualViewport?.height || window.innerHeight;
