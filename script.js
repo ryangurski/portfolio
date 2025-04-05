@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   body.style.overflowX = "hidden";
   
-  
   setupReadMoreButtons();
   setupMenuButton();
   setupIntroButtons(page);
@@ -38,20 +37,53 @@ document.addEventListener('DOMContentLoaded', () => {
       grainContainer.style.transition = "opacity 1s ease-in-out";
       grainContainer.style.opacity = "1";
       
-      requestIdleCallback(() => {
-        generateRemainingGrains();
-        
-        animateLogo(page);
-      });
+      // Fallback for requestIdleCallback if it's not supported
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          generateRemainingGrains();
+          animateLogo(page);
+        });
+      } else {
+        setTimeout(() => {
+          generateRemainingGrains();
+          animateLogo(page);
+        }, 500);
+      }
     }, 100);
   });
   
   let resizeTimeout;
+  let lastWidth = window.innerWidth;
+  let lastHeight = window.innerHeight;
+  
   window.addEventListener('resize', () => {
     if (resizeTimeout) clearTimeout(resizeTimeout);
+    
     resizeTimeout = setTimeout(() => {
+      // Check if the size changed significantly (more than 15% in either dimension)
+      const widthChange = Math.abs(window.innerWidth - lastWidth) / lastWidth;
+      const heightChange = Math.abs(window.innerHeight - lastHeight) / lastHeight;
+      
       adjustPageLayout();
       adjustPageHeight();
+      
+      // If screen size changed significantly, regenerate all grains
+      if (widthChange > 0.15 || heightChange > 0.15) {
+        // Save the new dimensions
+        lastWidth = window.innerWidth;
+        lastHeight = window.innerHeight;
+        
+        // Clear existing grains
+        while (grainContainer.firstChild) {
+          grainContainer.removeChild(grainContainer.firstChild);
+        }
+        
+        // Regenerate grains for the new screen size
+        generateInitialGrains();
+        setTimeout(() => {
+          generateRemainingGrains();
+        }, 300);
+      }
     }, 150); 
   });
   
@@ -59,16 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.querySelector(".logo");
     
     if (logo && /index\d*\.html$/.test(page)) {
-      // Remove existing animation class if any
       logo.classList.remove("logo-spin");
-      
-      // Force reflow
       void logo.offsetWidth;
-      
-      // Add animation class
       logo.classList.add("logo-spin");
       
-      // Remove class after animation completes
       setTimeout(() => {
         logo.classList.remove("logo-spin");
       }, 1000);
@@ -99,43 +125,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentGrains = grainContainer.querySelectorAll('.grain').length;
     const remainingGrains = numGrains - currentGrains;
 
-  if (remainingGrains <= 0) return;
+    if (remainingGrains <= 0) return;
 
-  const fragment = document.createDocumentFragment();
-  const pageHeight = Math.max(
-    body.scrollHeight,
-    document.documentElement.scrollHeight
-  );
+    const fragment = document.createDocumentFragment();
+    const pageHeight = Math.max(
+      body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
 
-  const batchSize = 50;
-  const batches = Math.ceil(remainingGrains / batchSize);
+    const batchSize = 50;
+    const batches = Math.ceil(remainingGrains / batchSize);
 
-  function createBatch(batchIndex) {
-    if (batchIndex >= batches) return;
+    function createBatch(batchIndex) {
+      if (batchIndex >= batches) return;
 
-    const start = batchIndex * batchSize;
-    const end = Math.min(start + batchSize, remainingGrains);
-    const localFragment = document.createDocumentFragment();
+      const start = batchIndex * batchSize;
+      const end = Math.min(start + batchSize, remainingGrains);
+      const localFragment = document.createDocumentFragment();
 
-    for (let i = start; i < end; i++) {
-      const grain = createGrain(window.innerWidth, pageHeight);
-      localFragment.appendChild(grain);
+      for (let i = start; i < end; i++) {
+        const grain = createGrain(window.innerWidth, pageHeight);
+        localFragment.appendChild(grain);
+      }
+
+      grainContainer.appendChild(localFragment);
+
+      requestAnimationFrame(() => {
+        const newGrains = Array.from(grainContainer.querySelectorAll('.grain')).slice(-(end - start));
+        newGrains.forEach(grain => animateGrain(grain));
+      });
+
+      if (batchIndex + 1 < batches) {
+        setTimeout(() => createBatch(batchIndex + 1), 100); 
+      }
     }
 
-    grainContainer.appendChild(localFragment);
-
-    requestAnimationFrame(() => {
-      const newGrains = Array.from(grainContainer.querySelectorAll('.grain')).slice(-(end - start));
-      newGrains.forEach(grain => animateGrain(grain));
-    });
-
-    if (batchIndex + 1 < batches) {
-      setTimeout(() => createBatch(batchIndex + 1), 100); 
-    }
+    createBatch(0);
   }
-
-  createBatch(0);
-}
 
   function createGrain(width, height) {
     const grain = document.createElement("div");
@@ -149,22 +175,21 @@ document.addEventListener('DOMContentLoaded', () => {
     grain.style.opacity = "0.8"; 
     grain.style.willChange = "transform, opacity"; 
 
-  return grain;
+    return grain;
   }
 
   function animateGrain(grain, isInitial = false) {
-  function move() {
-    const factor = isInitial ? 0.3 : 1.0;
-    const randomX = (Math.random() - 0.5) * 30 * factor; 
-    const randomY = (Math.random() - 0.5) * 30 * factor;
+    function move() {
+      const factor = isInitial ? 0.3 : 1.0;
+      const randomX = (Math.random() - 0.5) * 30 * factor; 
+      const randomY = (Math.random() - 0.5) * 30 * factor;
 
-    grain.style.transform = `translate(${randomX}px, ${randomY}px)`;
+      grain.style.transform = `translate(${randomX}px, ${randomY}px)`;
 
-    setTimeout(() => requestAnimationFrame(move), 800 + Math.random() * 1200); 
+      setTimeout(() => requestAnimationFrame(move), 800 + Math.random() * 1200); 
+    }
+    requestAnimationFrame(move);
   }
-  requestAnimationFrame(move);
-  }
-
 
   generateInitialGrains();
   setTimeout(generateRemainingGrains, 500);
@@ -352,3 +377,4 @@ document.addEventListener('DOMContentLoaded', () => {
     lockTextToStripes();
   }
 });
+ 
