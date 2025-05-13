@@ -366,6 +366,10 @@ p {
   background-color: black; 
 }
 
+.intro-button.inactive:hover {
+  background-color: #F79420; 
+}
+
 .ae-br, .ae-door, .blend-br, .blend-pp {
   width: 100%; 
   height: auto;
@@ -385,12 +389,12 @@ p {
   height: auto;
   margin-left: auto;
   margin-right: auto;
-  transition: opacity 0.3s ease;
 }
 
-.showcase:hover {
-  opacity: 0.5;
-  cursor: pointer;
+.custom-link {
+  color: white;
+  text-decoration: none;
+  border-bottom: 2px solid #F79420;
 }
 
 .iphone {

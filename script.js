@@ -36,8 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       grainContainer.style.transition = "opacity 1s ease-in-out";
       grainContainer.style.opacity = "1";
-      
-      // Fallback for requestIdleCallback if it's not supported
+    
       if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
           generateRemainingGrains();
@@ -60,25 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (resizeTimeout) clearTimeout(resizeTimeout);
     
     resizeTimeout = setTimeout(() => {
-      // Check if the size changed significantly (more than 15% in either dimension)
       const widthChange = Math.abs(window.innerWidth - lastWidth) / lastWidth;
       const heightChange = Math.abs(window.innerHeight - lastHeight) / lastHeight;
       
       adjustPageLayout();
       adjustPageHeight();
       
-      // If screen size changed significantly, regenerate all grains
       if (widthChange > 0.15 || heightChange > 0.15) {
-        // Save the new dimensions
         lastWidth = window.innerWidth;
         lastHeight = window.innerHeight;
         
-        // Clear existing grains
         while (grainContainer.firstChild) {
           grainContainer.removeChild(grainContainer.firstChild);
         }
         
-        // Regenerate grains for the new screen size
         generateInitialGrains();
         setTimeout(() => {
           generateRemainingGrains();
