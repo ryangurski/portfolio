@@ -281,6 +281,13 @@ body {
   background-color: #F79420; 
 }
 
+.spoilers-label {
+  font-family: "Stevie Sans", sans-serif;
+  font-weight: 400;
+  font-size: 1.2vw;
+  color: white;
+}
+
 .extra-text {
   display: none;
   font-family: "Stevie Sans", sans-serif;
