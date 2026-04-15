@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (page === "index3.html") {
     body.style.minHeight = "150vh"; 
     body.style.overflow = "auto";
+    } else if (page === "index4.html") {
+    body.style.minHeight = "150vh"; 
+    body.style.overflow = "auto";
   } else {
     body.style.minHeight = "100vh";
     body.style.overflow = "hidden";
@@ -293,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       firstButton.classList.add("active");
       if (firstTarget) firstTarget.style.display = "block";
+      
       
       buttons.forEach(button => {
         button.addEventListener("click", () => {

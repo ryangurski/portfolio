@@ -160,7 +160,7 @@ body {
 .menu-container {
   position: fixed; 
   top: 3vh;
-  right: 2.5vw;
+  right: 2.8vw;
   z-index: 1000; 
 }
 
@@ -171,7 +171,7 @@ body {
   padding: 0.8vh 1.5vw;
   cursor: pointer;
   border-radius: 5px;
-  font-size: 2vw;
+  font-size: 2.2vw;
 }
 
 .menu-items {
@@ -182,7 +182,7 @@ body {
   left: 0; 
   padding: 1vh 1.5vw;
   border-radius: 5px;
-  font-size: 1.2vw;
+  font-size: 1.5vw;
   white-space: nowrap; 
 }
 
@@ -193,12 +193,12 @@ body {
   padding: 1vh 0;
   font-family: "Stevie Sans", sans-serif;
   font-weight: 400;
-  font-size: 1.2vw;
+  font-size: 1.5vw;
 }
 
 .menu-items a:hover {
   background-color: #F79420;
-  border-radius: 5px;
+  border-radius: 6px;
   transition: background-color 0.3s ease;
 }
 
