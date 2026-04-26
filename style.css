@@ -291,6 +291,19 @@ body {
   margin-top: 0.5vw;
 }
 
+summary {
+  font-family: "Stevie Sans", sans-serif;
+  font-size: 1.2vw;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  padding: 1vh;
+}
+
+summary:hover {
+  background-color: #F79420; 
+}
+
 #videos-container a {
   text-decoration: none;
 }
@@ -572,6 +585,11 @@ a {
     padding-top: 1vh;
     padding-bottom: 3vh;
   } 
+
+  summary {
+  font-size: 3vw;
+  padding: 2vh;
+}
 
   .button-container {
     display: flex;
