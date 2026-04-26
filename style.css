@@ -517,7 +517,7 @@ a {
   }
 
   *:hover {
-    color: unset; 
+    background-color: none;
   }
 
   #firstname, #lastname {
