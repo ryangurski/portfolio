@@ -601,7 +601,7 @@ a {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 1.5vw;
+    gap: 1.5vw; 
     left: auto;
     top: 22vh;
   }
@@ -617,21 +617,18 @@ a {
   }
 
   .container {
-    position: absolute;
+    width: 90vw;
     margin-left: auto;
     margin-right: auto;
-    top: 45vh; 
-    width: 90vw;
-    left: 5vw;
-    right: 5vw;
+    text-align: center;  
+    right: 5vw; 
+    left: 5vw;   
+    margin: 24vh auto; 
   }
 
-  .container > * {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    text-align: center;
+  .container p {
     font-size: 3vw;
+    text-align: center;
     padding-bottom: 5vh;
   }
 
@@ -653,7 +650,7 @@ a {
   }
 
   iframe {
-    padding-bottom: 5vh;
+    padding-bottom: 2vh;
   }
 
   .pc, .dar {
