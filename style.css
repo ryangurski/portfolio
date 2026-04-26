@@ -511,10 +511,13 @@ a {
     overflow-y: auto;
   }
 
+  * {
+    transition: color 0.5s ease !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   *:hover {
-    background-color: inherit;
-    color: inherit;
-    transition: all 0.5s ease;
+    color: unset; 
   }
 
   #firstname, #lastname {
