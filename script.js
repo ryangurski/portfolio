@@ -330,31 +330,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function initMobileInteractionFix() {
+  function initUniversalHoverFix() {
     if (!('ontouchstart' in window)) return;
 
-    document.addEventListener('touchend', function(e) {
-        const el = e.target.closest('button, a, .hover-effect');
-        
-        if (el) {
-            el.blur();
-            const originalTransition = el.style.transition;
-            el.style.transition = 'none'; 
-            
-            setTimeout(() => {
-                el.style.pointerEvents = 'none';
-                el.offsetHeight; 
+    const killState = (el) => {
+        if (!el) return;
 
-                setTimeout(() => {
-                    el.style.pointerEvents = 'auto';
-                    el.style.transition = originalTransition;
-                }, 50);
-            }, 100);
+        el.blur();
+        const originalPointerEvents = el.style.pointerEvents;
+        el.style.pointerEvents = 'none';
+
+        requestAnimationFrame(() => {
+            el.style.pointerEvents = originalPointerEvents;
+        });
+    };
+
+    document.addEventListener('touchend', function(e) {
+        const el = e.target.closest('button, a, [class*="hover"], [class*="active"], [role="button"]');
+        if (el) {
+            setTimeout(() => killState(el), 150);
         }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+        const el = e.target.closest('button, a');
+        if (el) killState(el);
     }, { passive: true });
   }
 
-  initMobileInteractionFix();
+  initUniversalHoverFix();
   
   function setupVideoNavigation() {
     const iframes = document.querySelectorAll("iframe");
