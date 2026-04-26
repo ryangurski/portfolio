@@ -623,13 +623,13 @@ a {
     text-align: center;  
     right: 5vw; 
     left: 5vw;   
-    top: 50%;  
+    top: 45vh;  
   }
 
   .container p {
     font-size: 3vw;
     text-align: center;
-    margin: 1vh auto;
+    margin-top: 4vh;
     padding-bottom: 5vh;
   }
 
