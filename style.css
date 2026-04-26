@@ -5,7 +5,7 @@
 body {
   min-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding-bottom: 1vh;
   background-color: #232323;
   overflow: hidden; 
   display: flex;
@@ -556,7 +556,7 @@ a {
   #videos-container {
     left: 3vw;
     top: 25vh;
-    gap: 4vh;
+    gap: 2vh;
   }
   
   .video-item {
@@ -583,12 +583,12 @@ a {
     font-size: 3vw;
     max-width: 90%;
     padding-top: 1vh;
-    padding-bottom: 1vh;
+    padding-bottom: 3vh;
   } 
 
   summary {
-  font-size: 3vw;
-}
+    font-size: 3vw;
+  }
 
   .button-container {
     display: flex;
