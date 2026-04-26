@@ -511,7 +511,17 @@ a {
     overflow-y: auto;
   }
 
-  * { transition: all 0.5s ease; } *:active { transition: 0s; }
+  * {
+    transition: all 0.5s ease !important;
+  }
+
+  *:active {
+    transition: 0s !important;
+  }
+
+  *:hover {
+    transition: all 0.5s ease !important;
+  }
 
   #firstname, #lastname {
     font-size: 6vw;
