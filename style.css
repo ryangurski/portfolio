@@ -511,6 +511,10 @@ a {
     overflow-y: auto;
   }
 
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
   #firstname, #lastname {
     font-size: 6vw;
   }
