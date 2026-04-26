@@ -511,6 +511,8 @@ a {
     overflow-y: auto;
   }
 
+@media (hover: none) { *:hover { transition: 0s !important; } }
+
   #firstname, #lastname {
     font-size: 6vw;
   }
@@ -588,6 +590,7 @@ a {
 
   summary {
     font-size: 3vw;
+    padding: 2vh;
   }
 
   .button-container {
