@@ -511,16 +511,10 @@ a {
     overflow-y: auto;
   }
 
-  * {
-    transition: all 0.5s ease !important;
-  }
-
-  *:active {
-    transition: 0s !important;
-  }
-
   *:hover {
-    transition: all 0.5s ease !important;
+    background-color: inherit;
+    color: inherit;
+    transition: all 0.5s ease;
   }
 
   #firstname, #lastname {
