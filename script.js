@@ -331,16 +331,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initMobileInteractionFix() {
+    if (!('ontouchstart' in window)) return;
+
     document.addEventListener('touchend', function(e) {
-        const el = e.target.closest('button, a, .hover-effect'); 
+        const el = e.target.closest('button, a, .hover-effect');
+        
         if (el) {
+            el.blur();
+            const originalTransition = el.style.transition;
+            el.style.transition = 'none'; 
+            
             setTimeout(() => {
-                el.style.pointerEvents = 'none'; 
-                el.blur();                       
+                el.style.pointerEvents = 'none';
+                el.offsetHeight; 
+
                 setTimeout(() => {
                     el.style.pointerEvents = 'auto';
+                    el.style.transition = originalTransition;
                 }, 50);
-            }, 100); 
+            }, 100);
         }
     }, { passive: true });
   }
