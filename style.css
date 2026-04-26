@@ -511,7 +511,7 @@ a {
     overflow-y: auto;
   }
 
-@media (hover: none) { *:hover { transition: 0s !important; } }
+@media (hover: none) { *:hover { transition: 0s; } }
 
   #firstname, #lastname {
     font-size: 6vw;
