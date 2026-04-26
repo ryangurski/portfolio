@@ -329,6 +329,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+  function initMobileInteractionFix() {
+    document.addEventListener('touchend', function(e) {
+        const el = e.target.closest('button, a, .hover-effect'); 
+        if (el) {
+            setTimeout(() => {
+                el.style.pointerEvents = 'none'; 
+                el.blur();                       
+                setTimeout(() => {
+                    el.style.pointerEvents = 'auto';
+                }, 50);
+            }, 100); 
+        }
+    }, { passive: true });
+  }
+
+  initMobileInteractionFix();
   
   function setupVideoNavigation() {
     const iframes = document.querySelectorAll("iframe");
