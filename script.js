@@ -251,6 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const btn = document.querySelector(`.intro-button[data-target="${hash}"]`);
+        if (btn) {
+            btn.click();
+        }
+    }
   
   function setupReadMoreButtons() {
     document.querySelectorAll(".read-more-btn").forEach(button => {
