@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function setupIntroButtons(page) {
     const buttons = document.querySelectorAll(".intro-button");
-    const images = document.querySelectorAll(".ae-br, .ae-door, .blend-br, .blend-pp");
+    const images = document.querySelectorAll(".ae-br, .ae-door, .blend-br, .blend-pp, .vs-sw, .blend-em");
     let index = 0;
     let intervalId;
     

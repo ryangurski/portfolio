@@ -383,9 +383,9 @@ p {
   background-color: #F79420; 
 }
 
-.ae-br, .ae-door, .blend-br, .blend-pp {
+.ae-br, .ae-door, .blend-br, .blend-pp, .code-sw, .vs-sw, .blend-em {
   width: 100%; 
-  height: auto;
+  height: 50vh;
   flex-shrink: 0;
   transition: transform 1s ease-in-out;
   position: absolute; 
@@ -393,7 +393,7 @@ p {
   opacity: 0; 
 }
 
-.ae-br.active, .ae-door.active, .blend-br.active, .blend-pp.active {
+.ae-br.active, .ae-door.active, .blend-br.active, .blend-pp.active, .vs-sw.active, .blend-em.active {
   opacity: 1; 
 }
 
