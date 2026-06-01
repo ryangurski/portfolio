@@ -385,7 +385,7 @@ p {
 
 .ae-br, .ae-door, .blend-br, .blend-pp, .code-sw, .vs-sw, .blend-em {
   width: 100%; 
-  height: 50vh;
+  height: auto;
   flex-shrink: 0;
   transition: transform 1s ease-in-out;
   position: absolute; 
