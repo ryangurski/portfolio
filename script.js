@@ -53,28 +53,60 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 100);
   });
+
+  window.addEventListener('load', adjustPageHeight, { once: true });
+  document.querySelectorAll('img, iframe').forEach(element => {
+    element.addEventListener('load', schedulePageHeight, { once: true });
+  });
+  document.querySelectorAll('details').forEach(details => {
+    details.addEventListener('toggle', schedulePageHeight);
+  });
+
+  const pageHeightObserver = new MutationObserver(records => {
+    if (records.some(record => {
+      return record.target !== document.body && !grainContainer.contains(record.target);
+    })) {
+      schedulePageHeight();
+    }
+  });
+  pageHeightObserver.observe(document.body, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class', 'style', 'open']
+  });
   
   let resizeTimeout;
+  let resizeFrame;
   let lastWidth = window.innerWidth;
   let lastHeight = window.innerHeight;
+  let wasMobile = window.innerWidth <= 768;
+  let grainGeneration = 0;
+  let remainingGrainTimeout;
   
   window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile !== wasMobile) {
+        body.style.minHeight = '';
+        wasMobile = isMobile;
+      }
+      adjustPageLayout();
+      schedulePageHeight();
+    });
+
     if (resizeTimeout) clearTimeout(resizeTimeout);
     
     resizeTimeout = setTimeout(() => {
       const widthChange = Math.abs(window.innerWidth - lastWidth) / lastWidth;
       const heightChange = Math.abs(window.innerHeight - lastHeight) / lastHeight;
       
-      adjustPageLayout();
-      adjustPageHeight();
-      
       if (widthChange > 0.15 || heightChange > 0.15) {
         lastWidth = window.innerWidth;
         lastHeight = window.innerHeight;
-        
-        while (grainContainer.firstChild) {
-          grainContainer.removeChild(grainContainer.firstChild);
-        }
+        grainGeneration += 1;
+        clearTimeout(remainingGrainTimeout);
+        grainContainer.replaceChildren();
         
         generateInitialGrains();
         setTimeout(() => {
@@ -118,13 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function generateRemainingGrains() {
-    const numGrains = 500;
+    // Keep the decorative layer lightweight on smaller or slower devices.
+    const numGrains = Math.min(300, Math.max(120, Math.round(window.innerWidth / 4)));
     const currentGrains = grainContainer.querySelectorAll('.grain').length;
     const remainingGrains = numGrains - currentGrains;
+    const generation = grainGeneration;
 
     if (remainingGrains <= 0) return;
 
-    const fragment = document.createDocumentFragment();
     const pageHeight = Math.max(
       body.scrollHeight,
       document.documentElement.scrollHeight
@@ -134,26 +167,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const batches = Math.ceil(remainingGrains / batchSize);
 
     function createBatch(batchIndex) {
-      if (batchIndex >= batches) return;
+      if (batchIndex >= batches || generation !== grainGeneration) return;
 
       const start = batchIndex * batchSize;
       const end = Math.min(start + batchSize, remainingGrains);
       const localFragment = document.createDocumentFragment();
+      const newGrains = [];
 
       for (let i = start; i < end; i++) {
         const grain = createGrain(window.innerWidth, pageHeight);
         localFragment.appendChild(grain);
+        newGrains.push(grain);
       }
 
       grainContainer.appendChild(localFragment);
 
       requestAnimationFrame(() => {
-        const newGrains = Array.from(grainContainer.querySelectorAll('.grain')).slice(-(end - start));
         newGrains.forEach(grain => animateGrain(grain));
       });
 
       if (batchIndex + 1 < batches) {
-        setTimeout(() => createBatch(batchIndex + 1), 100); 
+        remainingGrainTimeout = setTimeout(() => createBatch(batchIndex + 1), 100);
       }
     }
 
@@ -170,12 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
     grain.style.left = `${randomX}px`;
     grain.style.top = `${randomY}px`;
     grain.style.opacity = "0.8"; 
-    grain.style.willChange = "transform, opacity"; 
-
     return grain;
   }
 
   function animateGrain(grain, isInitial = false) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     function move() {
       const factor = isInitial ? 0.3 : 1.0;
       const randomX = (Math.random() - 0.5) * 30 * factor; 
@@ -188,14 +222,38 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(move);
   }
 
-  generateInitialGrains();
-  setTimeout(generateRemainingGrains, 500);
-
   function adjustPageHeight() {
-    let lastElement = [...document.body.children].reverse().find(el => el.offsetHeight > 0);
-    if (!lastElement) return;
-    const neededHeight = lastElement.getBoundingClientRect().bottom + window.scrollY + 50;
+    const bottomGap = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--page-bottom-gap')
+    ) || 32;
+    const visibleElements = [...document.body.querySelectorAll('*')].filter(element => {
+      if (element === grainContainer || element.getBoundingClientRect().width === 0) return false;
+
+      let ancestor = element;
+      while (ancestor && ancestor !== document.body) {
+        const styles = window.getComputedStyle(ancestor);
+        if (styles.display === 'none' || styles.visibility === 'hidden' || styles.position === 'fixed') {
+          return false;
+        }
+        ancestor = ancestor.parentElement;
+      }
+
+      return true;
+    });
+    const maxBottom = visibleElements.reduce((bottom, element) => {
+      return Math.max(bottom, element.getBoundingClientRect().bottom + window.scrollY);
+    }, 0);
+
+    if (maxBottom === 0) return;
+
+    const neededHeight = maxBottom + bottomGap;
     document.body.style.minHeight = `${Math.max(neededHeight, window.innerHeight)}px`;
+  }
+
+  let pageHeightFrame;
+  function schedulePageHeight() {
+    cancelAnimationFrame(pageHeightFrame);
+    pageHeightFrame = requestAnimationFrame(adjustPageHeight);
   }
   
   function adjustElementPosition(selector) {
@@ -268,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         extraText.style.display = isExpanded ? "none" : "block";
         this.textContent = isExpanded ? "Read More" : "Read Less";
+        schedulePageHeight();
       });
     });
   }
@@ -316,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target) target.style.display = "none";
             
             body.style.minHeight = page === "index2.html" || page === "index3.html" ? "150vh" : "100vh";
+            schedulePageHeight();
           } else {
             buttons.forEach(btn => {
               btn.classList.remove("active");
@@ -332,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target) target.style.display = "block";
             
             resetCarousel();
+            schedulePageHeight();
           }
         });
       });
@@ -370,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function setupVideoNavigation() {
     const iframes = document.querySelectorAll("iframe");
-    const textElements = document.querySelectorAll("span:not(.circle)");
+    const textElements = document.querySelectorAll(".pc, .dar");
     const nextArrow = document.getElementById("nextArrow");
     const circles = document.querySelectorAll(".circle");
     let currentIndex = 0;
@@ -411,6 +472,17 @@ document.addEventListener('DOMContentLoaded', () => {
     adjustElementPosition('.button-container');
     centerElements();
     lockTextToStripes();
+    adjustAboutContentSpacing();
+  }
+
+  function adjustAboutContentSpacing() {
+    const buttonContainer = document.querySelector('.button-container');
+    const contentContainer = document.querySelector('.container');
+    if (!buttonContainer || !contentContainer || window.innerWidth > 768) return;
+
+    const buttonBottom = buttonContainer.getBoundingClientRect().bottom + window.scrollY;
+    const spacing = 10;
+    contentContainer.style.top = `${buttonBottom + spacing}px`;
+    contentContainer.style.margin = '0 auto';
   }
 });
- 
