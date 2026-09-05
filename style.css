@@ -52,7 +52,7 @@ body {
   position: fixed;
   left: 50%;
   width: 9.4%; 
-  height: calc(100vh - 56.25vw); /* 16:9 aspect ratio correction */
+  height: calc(100vh - 56.25vw); 
   transform: translateX(-50%);
   z-index: 0;
 }
@@ -539,6 +539,7 @@ p {
 .ae-br, .ae-door, .blend-br, .blend-pp, .vs-sw, .blend-em {
   width: 100%; 
   height: auto;
+  aspect-ratio: 16 / 9;
   flex-shrink: 0;
   transition: transform 1s ease-in-out;
   position: absolute; 
