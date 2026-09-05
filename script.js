@@ -7,21 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const grainContainer = document.getElementById("grain-container");
   const body = document.body;
-  let page = window.location.pathname.split("/").pop();
-  
-  if (page === "index2.html") {
-    body.style.minHeight = "230vh";
-    body.style.overflow = "auto";
-  } else if (page === "index3.html") {
-    body.style.minHeight = "150vh"; 
-    body.style.overflow = "auto";
-    } else if (page === "index4.html") {
-    body.style.minHeight = "150vh"; 
-    body.style.overflow = "auto";
-  } else {
-    body.style.minHeight = "100vh";
-    body.style.overflow = "hidden";
-  }
+  const page = window.location.pathname.split("/").pop() || "index.html";
+  const scrollablePages = new Set(["index2.html", "index3.html"]);
+
+  body.style.minHeight = page === "index2.html" ? "230vh" : scrollablePages.has(page) ? "150vh" : "100vh";
+  body.style.overflow = scrollablePages.has(page) ? "auto" : "hidden";
   body.style.overflowX = "hidden";
   
   setupReadMoreButtons();
@@ -42,13 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
       if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
-          generateRemainingGrains();
-          animateLogo(page);
+          startDeferredDecorations();
         });
       } else {
         setTimeout(() => {
-          generateRemainingGrains();
-          animateLogo(page);
+          startDeferredDecorations();
         }, 500);
       }
     }, 100);
@@ -128,6 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
         logo.classList.remove("logo-spin");
       }, 1000);
     }
+
+  }
+
+  function startDeferredDecorations() {
+    generateRemainingGrains();
+    animateLogo(page);
   }
   
   function generateInitialGrains() {
@@ -145,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     grainContainer.appendChild(fragment);
 
     requestAnimationFrame(() => {
-      document.querySelectorAll('.grain').forEach(grain => animateGrain(grain, true));
+      grainContainer.querySelectorAll('.grain').forEach(grain => animateGrain(grain, true));
     });
   }
 
@@ -183,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       grainContainer.appendChild(localFragment);
 
       requestAnimationFrame(() => {
-        newGrains.forEach(grain => animateGrain(grain));
+        newGrains.forEach(grain => animateGrain(grain, false, generation));
       });
 
       if (batchIndex + 1 < batches) {
@@ -207,10 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return grain;
   }
 
-  function animateGrain(grain, isInitial = false) {
+  function animateGrain(grain, isInitial = false, generation = grainGeneration) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     function move() {
+      if (generation !== grainGeneration || !grain.isConnected) return;
+
       const factor = isInitial ? 0.3 : 1.0;
       const randomX = (Math.random() - 0.5) * 30 * factor; 
       const randomY = (Math.random() - 0.5) * 30 * factor;
@@ -257,11 +253,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function adjustElementPosition(selector) {
-    if (window.innerWidth <= 768) return;
-    
     const element = document.querySelector(selector);
+    if (!element) return;
+
+    if (window.innerWidth <= 768) {
+      element.style.removeProperty('top');
+      return;
+    }
+
     const stripedTop = document.querySelector('.striped-top');
-    if (!element || !stripedTop) return;
+    if (!stripedTop) return;
     
     const stripedHeight = stripedTop.offsetHeight;
     element.style.top = `${stripedHeight + 20 * (stripedHeight / 100)}px`;
@@ -292,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const stripeRect = stripe.getBoundingClientRect();
     const windowWidth = window.innerWidth;
-    
+
     videosText.style.left = `${stripeRect.left + stripeRect.width * 0.2}px`;
     videosText.style.top = `${stripeRect.top + stripeRect.height * 0.75}px`;
     aboutText.style.right = `${windowWidth - (stripeRect.left + stripeRect.width * 0.79)}px`;
@@ -304,19 +305,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.getElementById("menuItems");
     
     if (menuButton && menuItems) {
-      menuButton.addEventListener("click", function() {
-        menuButton.classList.toggle("open");
+      const setMenuOpen = isOpen => {
+        menuButton.classList.toggle("open", isOpen);
+        menuItems.classList.toggle("open", isOpen);
+        menuItems.style.opacity = isOpen ? "1" : "0";
+        menuItems.style.pointerEvents = isOpen ? "auto" : "none";
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+        menuButton.setAttribute("aria-label", `${isOpen ? "Close" : "Open"} navigation menu`);
+      };
+
+      menuItems.querySelectorAll("a").forEach(link => {
+        const linkPage = new URL(link.href, window.location.href).pathname.split("/").pop() || "index.html";
+        if (linkPage === page) {
+          link.setAttribute("aria-current", "page");
+        }
+        link.addEventListener("click", () => setMenuOpen(false));
+      });
+
+      menuButton.addEventListener("click", () => {
+        setMenuOpen(!menuButton.classList.contains("open"));
+      });
+
+      document.addEventListener("click", event => {
+        if (!menuButton.parentElement.contains(event.target)) {
+          setMenuOpen(false);
+        }
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          setMenuOpen(false);
+          menuButton.focus();
+        }
       });
     }
   }
 
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const btn = document.querySelector(`.intro-button[data-target="${hash}"]`);
-        if (btn) {
-            btn.click();
-        }
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    const button = document.querySelector(`.intro-button[data-target="${hash}"]`);
+    if (button) {
+      button.click();
     }
+  }
   
   function setupReadMoreButtons() {
     document.querySelectorAll(".read-more-btn").forEach(button => {
@@ -452,12 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
         textElements[currentIndex].style.display = "block";
         if (circles[currentIndex]) circles[currentIndex].classList.add("active");
         
-        if (currentIndex === 1) {
-          const darText = document.querySelector(".dar");
-          if (darText) {
-            darText.style.display = "block";
-          }
-        }
       }
       
       if (nextArrow) {

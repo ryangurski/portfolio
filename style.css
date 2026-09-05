@@ -7,6 +7,7 @@
   --section-gap: 24px;
   --content-gap: 16px;
   --text-gap: 8px;
+  --mobile-brand-top: 10vh;
 }
 
 body {
@@ -114,16 +115,17 @@ body {
   font-weight: 700;
   font-size: 5vw;
   white-space: nowrap; 
+  z-index: 2;
 }
 
 #firstname {
-  left: 22%;
-  top: 13%;
+  left: 22vw;
+  top: 13vh;
 }
 
 #lastname {
-  right: 13%;
-  top: 13%;
+  right: 13vw;
+  top: 13vh;
 }
 
 #videos {
@@ -183,49 +185,101 @@ body {
 
 .menu {
   position: relative;
-  background: black;
+  display: grid;
+  place-items: center;
+  width: clamp(42px, 3.6vw, 64px);
+  height: clamp(42px, 3.6vw, 64px);
+  background: rgba(0, 0, 0, 0.88);
   color: white;
-  padding: 0.8vh 1.5vw;
+  border: 0;
+  font: inherit;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 2.2vw;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
-.menu:hover {
+.menu:hover,
+.menu.open {
   background-color: #F79420;
-  transition: background-color 0.3s ease;
+  transform: translateY(-2px);
+}
+
+.menu-icon {
+  display: grid;
+  gap: 5px;
+  width: 22px;
+}
+
+.menu-icon span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.menu.open .menu-icon span:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu.open .menu-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu.open .menu-icon span:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.menu:focus-visible,
+.menu-items a:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #F79420;
+  outline-offset: 3px;
 }
 
 .menu-items {
-  position: absolute; 
-  display: none;
-  background: black;
-  top: 80%; 
-  left: 0; 
-  padding: 1vh 1.5vw;
-  border-radius: 5px;
-  font-size: 1.5vw;
-  white-space: nowrap; 
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  display: grid;
+  min-width: clamp(150px, 12vw, 210px);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .menu-items a {
   display: block;
   color: white;
   text-decoration: none;
-  padding: 1vh 0;
+  padding: 0.8em 1em;
   font-family: "Stevie Sans", sans-serif;
   font-weight: 400;
-  font-size: 1.5vw;
+  font-size: clamp(14px, 1.2vw, 18px);
+  border-radius: 9px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.menu-items a:hover {
+.menu-items a:hover,
+.menu-items a[aria-current="page"] {
   background-color: #F79420;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
+  color: black;
 }
 
-.menu.open + .menu-items {
-  display: block;
+.menu-items.open {
+  opacity: 1 !important;
+  pointer-events: auto;
+  transform: translateY(0) scale(1) !important;
 }
 
 #videos-top, #about-top {
@@ -405,7 +459,7 @@ p {
   background-color: #F79420; 
 }
 
-.ae-br, .ae-door, .blend-br, .blend-pp, .code-sw, .vs-sw, .blend-em {
+.ae-br, .ae-door, .blend-br, .blend-pp, .vs-sw, .blend-em {
   width: 100%; 
   height: auto;
   flex-shrink: 0;
@@ -533,25 +587,36 @@ a {
     overflow-y: auto;
   }
 
+  .background-stripes {
+    bottom: var(--page-bottom-gap);
+    left: 50%;
+    width: 100vw;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 100vh;
+    object-position: center bottom;
+    transform: translateX(-50%);
+  }
+
+  .background-stripes-top {
+    display: block;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
   }
-  
+
+  #videos, #about {
+    font-size: 4vw;
+  }
+
   #firstname, #lastname {
-    font-size: 6vw;
+    top: var(--mobile-brand-top);
   }
 
-  #firstname {
-    left: 20%;
-  }
-
-  #lastname {
-    right: 9%;
-  }
-  
   .logo {
-    top: 12%;
-    width: 12vw;
+    top: var(--mobile-brand-top);
+    width: 10vw;
   }
   
   .menu-container {
