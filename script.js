@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split("/").pop() || "index.html";
   const scrollablePages = new Set(["index2.html", "index3.html"]);
 
+  body.classList.toggle("homepage", page === "index.html");
   body.style.minHeight = page === "index2.html" ? "230vh" : scrollablePages.has(page) ? "150vh" : "100vh";
   body.style.overflow = scrollablePages.has(page) ? "auto" : "hidden";
   body.style.overflowX = "hidden";
@@ -351,12 +352,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function setupReadMoreButtons() {
     document.querySelectorAll(".read-more-btn").forEach(button => {
+      button.setAttribute("aria-expanded", "false");
       button.addEventListener("click", function() {
         let extraText = this.nextElementSibling;
         const isExpanded = extraText.style.display === "block";
         
         extraText.style.display = isExpanded ? "none" : "block";
         this.textContent = isExpanded ? "Read More" : "Read Less";
+        this.setAttribute("aria-expanded", String(!isExpanded));
         schedulePageHeight();
       });
     });

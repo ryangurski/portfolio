@@ -1,3 +1,4 @@
+
 * {
   box-sizing: border-box;
 }
@@ -8,6 +9,7 @@
   --content-gap: 16px;
   --text-gap: 8px;
   --mobile-brand-top: 10vh;
+  --orange-glow: 0 0 0.45rem rgba(247, 148, 32, 0.55);
 }
 
 body {
@@ -19,6 +21,18 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.homepage {
+  padding-bottom: 0;
+}
+
+.homepage .background-stripes {
+  bottom: 0;
+}
+
+.homepage .background-stripes-top {
+  height: calc(100vh - 56.25vw);
 }
 
 .background-stripes {
@@ -50,12 +64,14 @@ body {
   width: 8vw; 
   height: auto;
   cursor: pointer; 
-  transition: opacity 0.3s ease-in-out; 
+  filter: drop-shadow(0 0 0.35rem rgba(247, 148, 32, 0.55));
+  transition: opacity 0.3s ease-in-out, filter 0.3s ease-in-out;
   z-index: 2;
 }
 
 .logo:hover {
   opacity: 0.5;
+  filter: drop-shadow(0 0 0.55rem rgba(247, 148, 32, 0.8));
   cursor: pointer; 
 }
 
@@ -116,6 +132,7 @@ body {
   font-size: 5vw;
   white-space: nowrap; 
   z-index: 2;
+  text-shadow: var(--orange-glow);
 }
 
 #firstname {
@@ -160,6 +177,7 @@ body {
   cursor: pointer; 
   opacity: 0.6; 
   transition: color 0.3s ease-in-out; 
+  text-shadow: var(--orange-glow);
 }
 
 #videos:hover, #about:hover {
@@ -191,7 +209,7 @@ body {
   height: clamp(42px, 3.6vw, 64px);
   background: rgba(0, 0, 0, 0.88);
   color: white;
-  border: 0;
+  border: 1px solid rgba(247, 148, 32, 0.8);
   font: inherit;
   cursor: pointer;
   border-radius: 12px;
@@ -267,6 +285,7 @@ button:focus-visible {
   font-weight: 400;
   font-size: clamp(14px, 1.2vw, 18px);
   border-radius: 9px;
+  border: 1px solid transparent;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -274,6 +293,7 @@ button:focus-visible {
 .menu-items a[aria-current="page"] {
   background-color: #F79420;
   color: black;
+  border-color: #F79420;
 }
 
 .menu-items.open {
@@ -291,6 +311,7 @@ button:focus-visible {
   font-weight: 700;
   font-size: 4vw;
   z-index: 3;
+  text-shadow: var(--orange-glow);
 }
 
 #videos-container {
@@ -326,13 +347,15 @@ button:focus-visible {
   align-items: flex-start;
 }
 
-.video-text {
+.video-text,
+.video-text a {
   font-size: 1.7vw;
   color: white;
   font-family: "lulo-one", sans-serif;
   font-weight: 700;
   white-space: nowrap;
   margin-bottom: var(--text-gap);
+  text-shadow: var(--orange-glow);
 }
 
 .video-text:hover {
@@ -341,20 +364,36 @@ button:focus-visible {
 }
 
 .read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
   font-family: "Stevie Sans", sans-serif;
   font-weight: 400;
-  background-color: black;
+  background: rgba(0, 0, 0, 0.45);
   color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 0.5vw 1vw;
+  border: 1px solid rgba(247, 148, 32, 0.75);
+  border-radius: 999px;
+  padding: 0.45em 0.8em;
   font-size: 1.2vw;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.read-more-btn::before {
+  content: "+";
+  color: #F79420;
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.read-more-btn[aria-expanded="true"]::before {
+  content: "−";
 }
 
 .read-more-btn:hover {
-  background-color: #F79420; 
+  color: #232323;
+  background-color: #F79420;
+  border-color: #F79420;
 }
 
 .extra-text {
@@ -364,20 +403,52 @@ button:focus-visible {
   font-size: 1.2vw;
   color: white;
   max-width: 80%;
-  margin-top: var(--text-gap);
+  margin-top: 1em;
+  line-height: 1.6;
+}
+
+details {
+  margin-top: 1.2em;
+  line-height: 1.6;
 }
 
 summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
   font-family: "Stevie Sans", sans-serif;
   font-size: 1.2vw;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.2s;
-  padding: var(--text-gap);
+  color: white;
+  list-style: none;
+  border: 1px solid rgba(247, 148, 32, 0.75);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  padding: 0.45em 0.8em;
+  margin-bottom: 0.8em;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  content: "+";
+  color: #F79420;
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+details[open] summary::before {
+  content: "−";
 }
 
 summary:hover {
-  background-color: #F79420; 
+  color: #232323;
+  background-color: #F79420;
+  border-color: #F79420;
 }
 
 #videos-container a {
@@ -437,18 +508,22 @@ p {
   font-size: 1.5vw; 
   background-color: black; 
   color: white; 
-  border: none;
-  border-radius: 5px;
+  border: 1px solid rgba(247, 148, 32, 0.75);
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .intro-button:hover {
-  background-color: #F79420; 
+  color: #232323;
+  background-color: #F79420;
+  border-color: #F79420;
 }
 
 .intro-button.active {
   background-color: #F79420; 
+  color: #232323;
+  border-color: #F79420;
 }
 
 .intro-button.inactive {
@@ -456,7 +531,9 @@ p {
 }
 
 .intro-button.inactive:hover {
-  background-color: #F79420; 
+  color: #232323;
+  background-color: #F79420;
+  border-color: #F79420;
 }
 
 .ae-br, .ae-door, .blend-br, .blend-pp, .vs-sw, .blend-em {
@@ -492,15 +569,16 @@ p {
   height: auto;
 }
 
-.dar {
-  display: none; 
+.pc, .dar {
+  display: none;
   white-space: nowrap; 
 }
 
 .pc, .dar {
   font-size: 1.5vw;  
   font-weight: bold; 
-  padding: var(--content-gap);
+  padding: 0;
+  margin: var(--content-gap) 0 var(--text-gap);
 }
 
 
@@ -518,22 +596,24 @@ iframe.active {
 #nextArrow {
   position: absolute;
   right: 0;
-  padding: 0.5em 1.5em; 
-  font-size: 1.5vw; 
+  padding: 0.5em 1.5em;
+  font-size: 1.5vw;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: black; 
-  color: white; 
-  border: none;
-  border-radius: 5px; 
+  background: rgba(0, 0, 0, 0.45);
+  color: white;
+  border: 1px solid rgba(247, 148, 32, 0.75);
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.3s ease; 
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   text-align: center;
 }
 
 #nextArrow:hover {
-  background-color: #F79420; 
+  color: #232323;
+  background-color: #F79420;
+  border-color: #F79420;
 }
 
 .circle {
@@ -611,12 +691,13 @@ a {
   }
 
   #firstname, #lastname {
-    top: var(--mobile-brand-top);
+    font-size: 5vw;
+    top: 11vh;
   }
 
   .logo {
     top: var(--mobile-brand-top);
-    width: 10vw;
+    width: 12vw;
   }
   
   .menu-container {
@@ -679,7 +760,6 @@ a {
 
   summary {
     font-size: 3vw;
-    padding: 12px;
   }
 
   .button-container {
@@ -743,7 +823,8 @@ a {
   .pc, .dar {
     font-size: 3vw;
     text-align: center;
-    margin-bottom: var(--text-gap);
+    margin: var(--content-gap) 0 var(--text-gap);
+    padding: 0;
   }
 
   .circle {
